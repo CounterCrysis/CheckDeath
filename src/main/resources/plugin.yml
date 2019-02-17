@@ -1,5 +1,5 @@
-name: CounterPlayerDeathLogger
+name: CheckDeath
 author: CounterCrysis
 version: 0.0.1
 main: me.countercrysis.checkdeath.CheckDeath
-description: Tracks the details of a players death.
+description: Allows you to check the details of a players death, such as what items they had.
