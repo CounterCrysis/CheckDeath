@@ -24,18 +24,44 @@ public class YAMLServices {
 
     // Load player game names into cache
     private void initPlayersCache() {
-        players = new ArrayList<String>();
-       ((MemorySection) get("translate","users")).getKeys(false)
+        players = new ArrayList();
+        MemorySection ms = (MemorySection) get("translate","users");
+        if (ms == null) return;
+        ((MemorySection) get("translate","users")).getKeys(false)
                .forEach(p -> players.add(p));
+    }
+
+    // Load player game names into cache
+    public void cachePlayer(String username) {
+        if (!players.contains(username)) {
+            players.add(username.toLowerCase());
+        }
+    }
+
+    public List<String> getCachedPlayers() {
+        return players;
+    }
+
+    public List<String> getDeathIds(String username) {
+        List<String> ids = new ArrayList();
+        String uuid = getUUID(username);
+        MemorySection ms = (MemorySection) get(uuid,"deaths");
+        if (ms != null) {
+            ms.getKeys(false).forEach(id -> ids.add(id));
+        }
+        return ids;
     }
 
     // Add player to uuid translate
     public void setTranslate (String username, String uuid) {
+        username = username.toLowerCase();
         set("translate", "users."+username, uuid);
     }
 
     // Add player to uuid translate
     public String getUUID (String username) {
+        username = username.toLowerCase();
+        System.out.println(get("translate", "users." + username));
         return (String) get("translate", "users." + username);
     }
 

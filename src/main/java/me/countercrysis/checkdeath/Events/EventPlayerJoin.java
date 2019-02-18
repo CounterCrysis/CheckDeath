@@ -21,6 +21,7 @@ public class EventPlayerJoin implements Listener {
         String uuid = event.getPlayer().getUniqueId().toString();
         String username = event.getPlayer().getName();
         ys.put(uuid);
+        ys.cachePlayer(username);
         ys.setTranslate(username, uuid);
         ys.set(uuid, "username", username);
 

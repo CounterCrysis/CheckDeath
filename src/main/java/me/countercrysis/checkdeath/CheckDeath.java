@@ -3,6 +3,7 @@ package me.countercrysis.checkdeath;
 import me.countercrysis.checkdeath.Events.EventCommand;
 import me.countercrysis.checkdeath.Events.EventDeath;
 import me.countercrysis.checkdeath.Events.EventPlayerJoin;
+import me.countercrysis.checkdeath.Events.EventTabComplete;
 import me.countercrysis.checkdeath.Services.YAMLServices;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -20,6 +21,7 @@ public class CheckDeath extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new EventDeath(this, ys), this);
         getServer().getPluginManager().registerEvents(new EventPlayerJoin(this, ys), this);
         getCommand("checkdeath").setExecutor(new EventCommand(this, ys));
+        getCommand("checkdeath").setTabCompleter(new EventTabComplete(ys));
     }
 
 }
