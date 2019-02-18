@@ -12,7 +12,7 @@ public class CheckDeath extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        ys = new YAMLServices(this, "PlayerData");
+        ys = new YAMLServices(this);
         registerEvents();
     }
 

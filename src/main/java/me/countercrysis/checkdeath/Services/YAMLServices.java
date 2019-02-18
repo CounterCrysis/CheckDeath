@@ -1,23 +1,32 @@
 package me.countercrysis.checkdeath.Services;
 
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 public class YAMLServices {
 
     private String folder;
     private JavaPlugin plugin;
+    private List<String> players;
 
+    // Constructor
     public YAMLServices(JavaPlugin plugin) {
         this.plugin = plugin;
         folder = "PlayerData";
+        initPlayersCache();
     }
 
-    public YAMLServices(JavaPlugin plugin, String folder) {
-        this.plugin = plugin;
-        this.folder = folder;
+    // Load player game names into cache
+    private void initPlayersCache() {
+        players = new ArrayList<String>();
+       ((MemorySection) get("translate","users")).getKeys(false)
+               .forEach(p -> players.add(p));
     }
 
     // Add player to uuid translate
