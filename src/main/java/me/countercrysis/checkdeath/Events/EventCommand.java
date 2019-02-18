@@ -2,6 +2,7 @@ package me.countercrysis.checkdeath.Events;
 
 import me.countercrysis.checkdeath.Services.Base64Services;
 import me.countercrysis.checkdeath.Services.YAMLServices;
+import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,6 +32,22 @@ public class EventCommand implements CommandExecutor{
         String death    = args[1];
         String data     = (String) ys.get(uuid, "deaths."+death+".data");
 
+        Server server = player.getServer();
+        String w    = (String) ys.get(uuid, "deaths."+death+".pos.world");
+        Integer x    = (Integer) ys.get(uuid, "deaths."+death+".pos.x");
+        Integer y    = (Integer) ys.get(uuid, "deaths."+death+".pos.y");
+        Integer z    = (Integer) ys.get(uuid, "deaths."+death+".pos.z");
+        Integer xp   = (Integer) ys.get(uuid, "deaths."+death+".xp");
+        String msg  = (String) ys.get(uuid, "deaths."+death+".msg");
+
+        server.broadcastMessage(w + "(" + x + ", " + y + ", " + z + ")");
+        server.broadcastMessage("Exp: " + xp);
+        server.broadcastMessage("Msg: " + msg);
+
+        System.out.println(player);
+        System.out.println(uuid);
+        System.out.println(death);
+        System.out.println(data);
         try {
             Inventory inventory = bs.fromBase64(data);
             player.openInventory(inventory);

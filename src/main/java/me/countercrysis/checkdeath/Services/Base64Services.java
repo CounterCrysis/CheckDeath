@@ -21,8 +21,8 @@ public class Base64Services {
             dataOutput.writeInt(items.size());
 
             // Save every element in the list
-            for (ItemStack item : items) {
-                dataOutput.writeObject(item);
+            for (int i = 0; i < items.size(); i++) {
+                dataOutput.writeObject(items.get(i));
             }
 
             // Serialize that array
@@ -38,9 +38,9 @@ public class Base64Services {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
             Inventory inventory = Bukkit.createInventory(null, 45, "CheckDeath Development");
-
+            int n = dataInput.readInt();
             // Read the serialized inventory
-            for (int i = 0; i < dataInput.readInt(); i++) {
+            for (int i = 0; i < n; i++) {
                 inventory.setItem(i, (ItemStack) dataInput.readObject());
             }
 

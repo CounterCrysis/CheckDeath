@@ -38,6 +38,10 @@ public class EventDeath implements Listener {
         ys.set(uuid, prefix+"msg", event.getDeathMessage());
         ys.set(uuid, prefix+"data", bs.itemStackArrayToBase64(event.getDrops()));
 
+        // For testing...
+        event.getEntity().getServer().broadcastMessage(epoch);
+
+
     }
 
 
