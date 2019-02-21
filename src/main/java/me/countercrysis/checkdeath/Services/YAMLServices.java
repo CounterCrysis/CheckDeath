@@ -6,46 +6,60 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class YAMLServices {
 
     private String folder;
     private JavaPlugin plugin;
-    private List<String> players;
+    //private List<String> players;
+    private Map<String, UUID> players;
 
     // Constructor
     public YAMLServices(JavaPlugin plugin) {
         this.plugin = plugin;
         folder = "PlayerData";
         initPlayersCache();
+
+        String username = getUsername(UUID.fromString("d18e65e4-bdc8-47f1-85d2-4d41c16e9c2f"));
+        System.out.println("-----'" + username + "'-----");
+    }
+
+    // Load player Name and UUID from translate file, if available.
+    private void initPlayersCache() {
+        players = new HashMap<>();
+        MemorySection ms = (MemorySection) get("translate","users");
+        if (ms == null) return;
+        ms.getValues(false)
+                .forEach((k,v)->players.put(k,UUID.fromString((String)v)));
     }
 
     // Load player game names into cache
+    /*
     private void initPlayersCache() {
-        players = new ArrayList();
+        //players = new ArrayList();
         MemorySection ms = (MemorySection) get("translate","users");
         if (ms == null) return;
         ((MemorySection) get("translate","users")).getKeys(false)
-               .forEach(p -> players.add(p));
+               .forEach(p -> players.put(p));
     }
+    */
 
     // Load player game names into cache
-    public void cachePlayer(String username) {
-        if (!players.contains(username)) {
-            players.add(username.toLowerCase());
+    public void cachePlayer(Player player) {
+        if (players.get(player.getUniqueId()) != null) {
+            players.put(player.getName(), player.getUniqueId());
         }
     }
 
-    public List<String> getCachedPlayers() {
+    public Map<String, UUID> getCachedPlayers() {
         return players;
     }
 
     public List<String> getDeathIds(String username) {
         List<String> ids = new ArrayList();
-        String uuid = getUUID(username);
-        MemorySection ms = (MemorySection) get(uuid,"deaths");
+        UUID uuid = getUUID(username);
+        MemorySection ms = (MemorySection) get(uuid.toString(),"deaths");
         if (ms != null) {
             ms.getKeys(false).forEach(id -> ids.add(id));
         }
@@ -53,16 +67,23 @@ public class YAMLServices {
     }
 
     // Add player to uuid translate
-    public void setTranslate (String username, String uuid) {
+    public void setTranslate (String username, UUID uuid) {
         username = username.toLowerCase();
         set("translate", "users."+username, uuid);
     }
 
     // Add player to uuid translate
-    public String getUUID (String username) {
-        username = username.toLowerCase();
-        System.out.println(get("translate", "users." + username));
-        return (String) get("translate", "users." + username);
+    public UUID getUUID (String username) {
+        return players.get(username);
+    }
+
+    // Add player to uuid translate
+    public String getUsername (UUID uuid) {
+        return players.entrySet().stream()
+                .filter( u -> u.getValue().equals(uuid))
+                .findAny()
+                .map(k -> k.getKey())
+                .orElse(null);
     }
 
     // Puts the file "name" in the folder
