@@ -1,6 +1,6 @@
 name: CheckDeath
 author: CounterCrysis
-version: 0.1.0
+version: 0.2.0
 main: me.countercrysis.checkdeath.CheckDeath
 description: Allows you to check the details of a players death, such as what items they had.
 api-version: 1.13
