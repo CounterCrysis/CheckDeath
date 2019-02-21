@@ -54,7 +54,7 @@ public class YAMLServices {
     // Add player to uuid translate
     public void setTranslate (String username, UUID uuid) {
         username = username.toLowerCase();
-        set("translate", "users."+username, uuid);
+        set("translate", "users."+username, uuid.toString());
     }
 
     // Add player to uuid translate

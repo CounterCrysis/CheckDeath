@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class EventTabComplete implements TabCompleter {
 
@@ -32,7 +33,7 @@ public class EventTabComplete implements TabCompleter {
             List<String> list = new ArrayList<String>();
             if (args.length == 1) {
                 String arg0 = args[0].toLowerCase();
-                List<String> players = ys.getCachedPlayers();
+                Set<String> players = ys.getCachedPlayers().keySet();
 
                 if (hasPerm(p, "others")) {
                     players.forEach(n -> { if (contains(n, arg0)) { list.add(n); }});
