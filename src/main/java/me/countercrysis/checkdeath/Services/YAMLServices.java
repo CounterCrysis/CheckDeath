@@ -12,7 +12,6 @@ public class YAMLServices {
 
     private String folder;
     private JavaPlugin plugin;
-    //private List<String> players;
     private Map<String, UUID> players;
 
     // Constructor
@@ -20,9 +19,6 @@ public class YAMLServices {
         this.plugin = plugin;
         folder = "PlayerData";
         initPlayersCache();
-
-        String username = getUsername(UUID.fromString("d18e65e4-bdc8-47f1-85d2-4d41c16e9c2f"));
-        System.out.println("-----'" + username + "'-----");
     }
 
     // Load player Name and UUID from translate file, if available.
@@ -33,17 +29,6 @@ public class YAMLServices {
         ms.getValues(false)
                 .forEach((k,v)->players.put(k,UUID.fromString((String)v)));
     }
-
-    // Load player game names into cache
-    /*
-    private void initPlayersCache() {
-        //players = new ArrayList();
-        MemorySection ms = (MemorySection) get("translate","users");
-        if (ms == null) return;
-        ((MemorySection) get("translate","users")).getKeys(false)
-               .forEach(p -> players.put(p));
-    }
-    */
 
     // Load player game names into cache
     public void cachePlayer(Player player) {
