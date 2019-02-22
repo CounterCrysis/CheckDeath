@@ -23,10 +23,6 @@ public class EventTabComplete implements TabCompleter {
         return (player.hasPermission("checkdeath."+perm));
     }
 
-    private boolean contains(String s1, String s2) {
-        return String.valueOf(s1).contains(s2);
-    }
-
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {
         if (sender instanceof Player) {
             Player p = (Player) sender;
