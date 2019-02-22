@@ -35,9 +35,9 @@ public class EventTabComplete implements TabCompleter {
                 String arg0 = args[0].toLowerCase();
                 Set<String> players = ys.getCachedPlayers().keySet();
 
-                if (hasPerm(p, "others")) {
+                if (hasPerm(p, "others") || hasPerm(p, "others.admin")) {
                     players.forEach(n -> { if (contains(n, arg0)) { list.add(n); }});
-                } else if (hasPerm(p, "self")) {
+                } else if (hasPerm(p, "self") || hasPerm(p, "self.admin")) {
                     list.add(p.getName());
                 }
 
