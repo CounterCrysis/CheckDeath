@@ -85,7 +85,7 @@ public class EventCommand implements CommandExecutor{
 
         int argCount = args.length;
         if (argCount >= 1) {
-            String username = args[0];
+            String username = args[0].toLowerCase();
             UUID uuid       = ys.getUUID(username);
 
             if ((hasPerm(player, "self") && player.getUniqueId().equals(uuid)) ||
@@ -97,17 +97,15 @@ public class EventCommand implements CommandExecutor{
                             hasPerm(player, "others.admin"));
                     player.openInventory(inventory);
                 } else {
-                    //not enough params
+                    player.sendMessage(ChatColor.LIGHT_PURPLE + "You did not include a Death ID");
+                    player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + username + " <death_id>");
                 }
+            } else {
+                player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
             }
-
         } else {
-            //      /checkdeath
+            player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + player.getName() + " <death_id>");
         }
-
-
-        //player.openInventory(inventory);
-
         return true;
     }
 
