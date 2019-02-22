@@ -41,26 +41,6 @@ public class EventCommand implements CommandExecutor{
         String death    = args[1];
         String data     = (String) ys.get(uuid.toString(), "deaths."+death+".data");
 
-        /*
-        Server server = player.getServer();
-
-        String w    = (String)  ys.get(uuid.toString(), "deaths."+death+".pos.world");
-        Integer x   = (Integer) ys.get(uuid.toString(), "deaths."+death+".pos.x");
-        Integer y   = (Integer) ys.get(uuid.toString(), "deaths."+death+".pos.y");
-        Integer z   = (Integer) ys.get(uuid.toString(), "deaths."+death+".pos.z");
-        Integer xp  = (Integer) ys.get(uuid.toString(), "deaths."+death+".xp");
-        String msg  = (String)  ys.get(uuid.toString(), "deaths."+death+".msg");
-
-        server.broadcastMessage(w + "(" + x + ", " + y + ", " + z + ")");
-        server.broadcastMessage("Exp: " + xp);
-        server.broadcastMessage("Msg: " + msg);
-
-        System.out.println(player);
-        System.out.println(uuid);
-        System.out.println(death);
-        System.out.println(data);
-        */
-
         Map<String, Object> deathDetails = new HashMap<>();
         deathDetails.put("n",   username);
         deathDetails.put("t",   death);
@@ -70,7 +50,6 @@ public class EventCommand implements CommandExecutor{
         deathDetails.put("z",   ys.get(uuid.toString(), "deaths."+death+".pos.z"));
         deathDetails.put("xp",  ys.get(uuid.toString(), "deaths."+death+".xp"));
         deathDetails.put("msg", ys.get(uuid.toString(), "deaths."+death+".msg"));
-
 
         Inventory inventory;
         try {
