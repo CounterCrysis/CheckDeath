@@ -41,11 +41,6 @@ public class EventTabComplete implements TabCompleter {
                     list.add(p.getName());
                 }
 
-                /*
-                if (hasPerm(p, "example") && contains("example", arg0))
-                    list.add("example");
-                */
-
             } else if (args.length == 2) {
 
                 if (((  hasPerm(p, "self") || hasPerm(p, "self.admin")) && p.getName().equalsIgnoreCase(args[0]))
@@ -57,7 +52,6 @@ public class EventTabComplete implements TabCompleter {
                     }
                 }
             }
-
             return list;
         }
         return null;
