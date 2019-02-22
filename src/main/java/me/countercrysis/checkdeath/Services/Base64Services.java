@@ -33,7 +33,7 @@ public class Base64Services {
         }
     }
 
-    public Inventory fromBase64(String data, String inventoryName) throws Exception {
+    public Inventory fromBase64(String data, String inventoryName) {
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
@@ -47,7 +47,7 @@ public class Base64Services {
             dataInput.close();
             return inventory;
         } catch (Exception e) {
-            throw new Exception("Unable to decode class type.", e);
+            return null;
         }
     }
 

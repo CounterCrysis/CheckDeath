@@ -50,6 +50,7 @@ public class EventCommand implements CommandExecutor{
 
     private Inventory getDeathInv (String username, UUID uuid, String death, boolean adminPerm) {
         String data     = (String) ys.get(uuid.toString(), "deaths."+death+".data");
+        if (data == null) return null;
 
         Map<String, Object> deathDetails = new HashMap<>();
         deathDetails.put("n",   username);
@@ -87,7 +88,10 @@ public class EventCommand implements CommandExecutor{
         if (argCount >= 1) {
             String username = args[0].toLowerCase();
             UUID uuid       = ys.getUUID(username);
-
+            if (uuid == null)  {
+                player.sendMessage(ChatColor.LIGHT_PURPLE + "Either the Username or Death ID you provided was incorrect!");
+                return true;
+            }
             if (((hasPerm(player, "self")
                     || hasPerm(player, "self.admin"))
                     && player.getUniqueId().equals(uuid))
