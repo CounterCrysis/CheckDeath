@@ -45,10 +45,11 @@ public class YAMLServices {
         username = username.toLowerCase();
         List<String> ids = new ArrayList();
         UUID uuid = getUUID(username);
-        MemorySection ms = (MemorySection) get(uuid.toString(),"deaths");
-        if (ms != null) {
-            ms.getKeys(false).forEach(id -> ids.add(id));
-        }
+        if (uuid == null) return ids;
+        Object temp = get(uuid.toString(),"deaths");
+        if (temp == null) return ids;
+        MemorySection ms = (MemorySection) temp;
+        ms.getKeys(false).forEach(id -> ids.add(id));
         return ids;
     }
 

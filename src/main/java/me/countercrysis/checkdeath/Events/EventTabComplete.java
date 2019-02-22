@@ -47,7 +47,10 @@ public class EventTabComplete implements TabCompleter {
                 */
 
             } else if (args.length == 2) {
-                list.addAll(ys.getDeathIds(args[0]));
+                List<String> deathIds = ys.getDeathIds(args[0]);
+                if (deathIds != null) {
+                    list.addAll(ys.getDeathIds(args[0]));
+                }
             }
 
             return list;
