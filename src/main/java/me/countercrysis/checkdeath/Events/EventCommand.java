@@ -88,8 +88,11 @@ public class EventCommand implements CommandExecutor{
             String username = args[0].toLowerCase();
             UUID uuid       = ys.getUUID(username);
 
-            if ((hasPerm(player, "self") && player.getUniqueId().equals(uuid)) ||
-                    hasPerm(player, "others")) {
+            if (((hasPerm(player, "self")
+                    || hasPerm(player, "self.admin"))
+                    && player.getUniqueId().equals(uuid))
+                    || hasPerm(player, "others")
+                    || hasPerm(player, "others.admin")){
                 if (argCount >= 2) {
                     String death = args[1];
                     Inventory inventory = getDeathInv(username, uuid, death,
@@ -108,6 +111,7 @@ public class EventCommand implements CommandExecutor{
         }
         return true;
     }
+
 
     // Translate Color Codes, allowing use of & prefix
     private static String tcc(String msg) {
