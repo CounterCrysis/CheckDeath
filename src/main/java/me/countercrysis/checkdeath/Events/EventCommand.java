@@ -98,7 +98,11 @@ public class EventCommand implements CommandExecutor{
                     Inventory inventory = getDeathInv(username, uuid, death,
                             (hasPerm(player, "self.admin") && player.getUniqueId().equals(uuid)) ||
                             hasPerm(player, "others.admin"));
-                    player.openInventory(inventory);
+                    if (inventory != null) {
+                        player.openInventory(inventory);
+                    } else {
+                        player.sendMessage(ChatColor.LIGHT_PURPLE + "Either the Username or Death ID you provided was incorrect!");
+                    }
                 } else {
                     player.sendMessage(ChatColor.LIGHT_PURPLE + "You did not include a Death ID");
                     player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + username + " <death_id>");
