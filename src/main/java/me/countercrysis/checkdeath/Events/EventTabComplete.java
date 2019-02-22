@@ -36,7 +36,7 @@ public class EventTabComplete implements TabCompleter {
                 Set<String> players = ys.getCachedPlayers().keySet();
 
                 if (hasPerm(p, "others") || hasPerm(p, "others.admin")) {
-                    players.forEach(n -> { if (contains(n, arg0)) { list.add(n); }});
+                    players.forEach(n -> { if (n.startsWith(arg0)) { list.add(n); }});
                 } else if (hasPerm(p, "self") || hasPerm(p, "self.admin")) {
                     list.add(p.getName());
                 }
@@ -49,7 +49,7 @@ public class EventTabComplete implements TabCompleter {
             } else if (args.length == 2) {
                 List<String> deathIds = ys.getDeathIds(args[0]);
                 if (deathIds != null) {
-                    list.addAll(ys.getDeathIds(args[0]));
+                    deathIds.forEach(id -> { if (id.startsWith(args[1])) list.add(id); });
                 }
             }
 
