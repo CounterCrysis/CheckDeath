@@ -33,11 +33,11 @@ public class Base64Services {
         }
     }
 
-    public Inventory fromBase64(String data) throws Exception {
+    public Inventory fromBase64(String data, String inventoryName) throws Exception {
         try {
             ByteArrayInputStream inputStream = new ByteArrayInputStream(Base64Coder.decodeLines(data));
             BukkitObjectInputStream dataInput = new BukkitObjectInputStream(inputStream);
-            Inventory inventory = Bukkit.createInventory(null, 45, "CheckDeath Development");
+            Inventory inventory = Bukkit.createInventory(null, 45, inventoryName);
             int n = dataInput.readInt();
             // Read the serialized inventory
             for (int i = 0; i < n; i++) {

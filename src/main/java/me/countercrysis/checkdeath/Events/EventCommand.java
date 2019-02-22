@@ -24,21 +24,31 @@ public class EventCommand implements CommandExecutor{
     private YAMLServices ys;
     private Base64Services bs;
 
+    private boolean hasPerm(Player player, String perm) {
+        return (player.hasPermission("checkdeath."+perm));
+    }
+
     public EventCommand(Plugin plugin, YAMLServices ys) {
         this.plugin = plugin;
         this.ys = ys;
         bs = new Base64Services();
     }
 
-    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
-        if (!(sender instanceof Player)) {
-            return false;
-        }
+    /*
+        checkdeath.???
 
-        Player player = (Player) sender;
-        String username = args[0];
-        UUID uuid       = ys.getUUID(username);
-        String death    = args[1];
+        user
+            self        /checkdeath player_name 012345  (check details of own death)
+                admin        /checkdeath admin player_name 012345 (check details of own death + retrieve items)
+            others      /checkdeath player_name 012345  (check details of other players death)
+                admin      /checkdeath admin player_name 012345 (check details of other players death + retrieve items)
+
+
+
+
+     */
+
+    private Inventory getDeathInv (String username, UUID uuid, String death, boolean adminPerm) {
         String data     = (String) ys.get(uuid.toString(), "deaths."+death+".data");
 
         Map<String, Object> deathDetails = new HashMap<>();
@@ -53,17 +63,50 @@ public class EventCommand implements CommandExecutor{
 
         Inventory inventory;
         try {
-            inventory = bs.fromBase64(data);
+            inventory = bs.fromBase64(data, "CheckDeath" + (adminPerm ? " - Admin" : "" ));
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
+            return null;
         }
 
         ItemStack head = getHead(username, uuid);
         addDeathDetails(head, deathDetails);
 
         inventory.setItem(inventory.getSize()-1, head);
-        player.openInventory(inventory);
+        return inventory;
+    }
+
+    public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
+        if (!(sender instanceof Player)) {
+            return false;
+        }
+
+        Player player = (Player) sender;
+
+        int argCount = args.length;
+        if (argCount >= 1) {
+            String username = args[0];
+            UUID uuid       = ys.getUUID(username);
+
+            if ((hasPerm(player, "self") && player.getUniqueId().equals(uuid)) ||
+                    hasPerm(player, "others")) {
+                if (argCount >= 2) {
+                    String death = args[1];
+                    Inventory inventory = getDeathInv(username, uuid, death,
+                            (hasPerm(player, "self.admin") && player.getUniqueId().equals(uuid)) ||
+                            hasPerm(player, "others.admin"));
+                    player.openInventory(inventory);
+                } else {
+                    //not enough params
+                }
+            }
+
+        } else {
+            //      /checkdeath
+        }
+
+
+        //player.openInventory(inventory);
 
         return true;
     }
