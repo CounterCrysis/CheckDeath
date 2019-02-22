@@ -85,6 +85,12 @@ public class EventCommand implements CommandExecutor{
         Player player = (Player) sender;
 
         int argCount = args.length;
+
+        if (!(hasPerm(player, "self") || hasPerm(player, "self.admin") || hasPerm(player, "others") || hasPerm(player, "others.admin"))) {
+            player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
+            return true;
+        }
+
         if (argCount >= 1) {
             String username = args[0].toLowerCase();
             UUID uuid       = ys.getUUID(username);
