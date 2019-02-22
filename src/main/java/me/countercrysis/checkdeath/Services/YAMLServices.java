@@ -42,6 +42,7 @@ public class YAMLServices {
     }
 
     public List<String> getDeathIds(String username) {
+        username = username.toLowerCase();
         List<String> ids = new ArrayList();
         UUID uuid = getUUID(username);
         MemorySection ms = (MemorySection) get(uuid.toString(),"deaths");
