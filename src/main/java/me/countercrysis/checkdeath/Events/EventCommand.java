@@ -97,7 +97,8 @@ public class EventCommand implements CommandExecutor{
     private static void addDeathDetails(ItemStack item, Map<String, Object> details) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName("§c§lDeath " + details.get("n"));
-        Float timeDif = (System.currentTimeMillis()/1000) - Float.parseFloat((String)details.get("t"));
+        Long now = System.currentTimeMillis(); //in milli
+        Double timeDif = (now.doubleValue()/1000.0) - Double.parseDouble((String)details.get("t"));
         itemMeta.setLore(Arrays.asList(
                 tcc("&1World: &r" + details.get("w")),
                 tcc("&9X: &r" + details.get("x") + " &9Y: &r" + details.get("y") + " &9Z: &r" + details.get("z")),
