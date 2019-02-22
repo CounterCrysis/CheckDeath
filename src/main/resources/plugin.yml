@@ -8,5 +8,4 @@ commands:
   checkdeath:
     description: Check a player death.
     usage: /<command>
-    permission: checkdeath
     permission-message: You don't have <permission>
