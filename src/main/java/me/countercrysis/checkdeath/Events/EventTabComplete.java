@@ -47,9 +47,14 @@ public class EventTabComplete implements TabCompleter {
                 */
 
             } else if (args.length == 2) {
-                List<String> deathIds = ys.getDeathIds(args[0]);
-                if (deathIds != null) {
-                    deathIds.forEach(id -> { if (id.startsWith(args[1])) list.add(id); });
+
+                if (((  hasPerm(p, "self") || hasPerm(p, "self.admin")) && p.getName().equalsIgnoreCase(args[0]))
+                        || hasPerm(p, "others")
+                        || hasPerm(p, "others.admin")){
+                    List<String> deathIds = ys.getDeathIds(args[0]);
+                    if (deathIds != null) {
+                        deathIds.forEach(id -> { if (id.startsWith(args[1])) list.add(id); });
+                    }
                 }
             }
 
