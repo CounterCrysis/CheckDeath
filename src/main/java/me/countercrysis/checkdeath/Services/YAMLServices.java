@@ -33,7 +33,7 @@ public class YAMLServices {
     // Load player game names into cache
     public void cachePlayer(Player player) {
         if (players.get(player.getUniqueId()) != null) {
-            players.put(player.getName(), player.getUniqueId());
+            players.put(player.getName().toLowerCase(), player.getUniqueId());
         }
     }
 
@@ -62,6 +62,10 @@ public class YAMLServices {
     // Add player to uuid translate
     public UUID getUUID (String username) {
         return players.get(username);
+    }
+
+    public UUID getUUID (Player player) {
+        return players.get(player.getName().toLowerCase());
     }
 
     // Add player to uuid translate
