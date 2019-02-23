@@ -32,9 +32,7 @@ public class YAMLServices {
 
     // Load player game names into cache
     public void cachePlayer(Player player) {
-        if (players.get(player.getUniqueId()) != null) {
-            players.put(player.getName().toLowerCase(), player.getUniqueId());
-        }
+        players.put(player.getName().toLowerCase(), player.getUniqueId());
     }
 
     public Map<String, UUID> getCachedPlayers() {
