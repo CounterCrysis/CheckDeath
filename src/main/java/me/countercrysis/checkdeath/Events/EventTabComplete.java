@@ -20,7 +20,7 @@ public class EventTabComplete implements TabCompleter {
     }
 
     private boolean hasPerm(Player player, String perm) {
-        return (player.hasPermission("checkdeath."+perm));
+        return (player.hasPermission("checkdeath."+perm) || player.isOp());
     }
 
     public List<String> onTabComplete(CommandSender sender, Command command, String s, String[] args) {

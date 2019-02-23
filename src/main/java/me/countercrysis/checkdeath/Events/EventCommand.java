@@ -25,7 +25,7 @@ public class EventCommand implements CommandExecutor{
     private Base64Services bs;
 
     private boolean hasPerm(Player player, String perm) {
-        return (player.hasPermission("checkdeath."+perm));
+        return (player.hasPermission("checkdeath."+perm) || player.isOp());
     }
 
     public EventCommand(Plugin plugin, YAMLServices ys) {
