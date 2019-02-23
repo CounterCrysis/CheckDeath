@@ -52,8 +52,8 @@ public class EventDeath implements Listener {
 
         // For testing...
         if (hasPermCheckSelf(player)) {
-            event.getEntity().getServer().broadcastMessage("§9[CheckDeath] §3Oh no you died! Check details with:");
-            event.getEntity().getServer().broadcastMessage("  /checkdeath " + player.getName() + " " + epoch);
+            player.sendMessage("§9[CheckDeath] §3Oh no you died! Check details with:");
+            player.sendMessage("  /checkdeath " + player.getName() + " " + epoch);
         }
 
 
