@@ -2,6 +2,7 @@ package me.countercrysis.checkdeath.Events;
 
 import me.countercrysis.checkdeath.Services.Base64Services;
 import me.countercrysis.checkdeath.Services.YAMLServices;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -19,6 +20,17 @@ public class EventDeath implements Listener {
         this.plugin = plugin;
         this.ys = ds;
         bs = new Base64Services();
+    }
+
+    private boolean hasPerm(Player player, String perm) {
+        return (player.hasPermission("checkdeath."+perm) || player.isOp());
+    }
+
+    private boolean hasPermCheckSelf(Player player) {
+        return (hasPerm(player, "self") ||
+                hasPerm(player, "self.admin") ||
+                hasPerm(player, "others") ||
+                hasPerm(player, "others.admin"));
     }
 
     @EventHandler
@@ -39,7 +51,11 @@ public class EventDeath implements Listener {
         ys.set(uuid, prefix+"data", bs.itemStackArrayToBase64(event.getDrops()));
 
         // For testing...
-        event.getEntity().getServer().broadcastMessage(epoch);
+        if (hasPermCheckSelf(player)) {
+            event.getEntity().getServer().broadcastMessage("§9[CheckDeath] §3Oh no you died! Check details with:");
+            event.getEntity().getServer().broadcastMessage("  /checkdeath " + player.getName() + " " + epoch);
+        }
+
 
 
     }
