@@ -23,7 +23,7 @@ public class EventPlayerJoin implements Listener {
         ys.put(uuid);
         ys.cachePlayer(event.getPlayer());
         ys.setTranslate(username, event.getPlayer().getUniqueId());
-        ys.set(uuid, "username", username);
+        ys.set(uuid, "username", username.toLowerCase());
 
     }
 
