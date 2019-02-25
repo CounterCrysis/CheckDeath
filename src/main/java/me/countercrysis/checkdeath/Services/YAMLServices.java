@@ -50,7 +50,7 @@ public class YAMLServices {
         ms.getKeys(false).forEach(id -> ids.add(id));
         return ids;
     }
- 
+
     // Add player to uuid translate
     public void setTranslate (String username, UUID uuid) {
         username = username.toLowerCase();
