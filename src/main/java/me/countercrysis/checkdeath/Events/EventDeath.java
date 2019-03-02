@@ -1,6 +1,7 @@
 package me.countercrysis.checkdeath.Events;
 
 import me.countercrysis.checkdeath.Services.Base64Services;
+import me.countercrysis.checkdeath.Services.JSONMessage;
 import me.countercrysis.checkdeath.Services.YAMLServices;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -50,16 +51,14 @@ public class EventDeath implements Listener {
         ys.set(uuid, prefix+"msg", event.getDeathMessage());
         ys.set(uuid, prefix+"data", bs.itemStackArrayToBase64(event.getDrops()));
 
-        // For testing...
+
         if (hasPermCheckSelf(player)) {
-            player.sendMessage("§9[CheckDeath] §3Oh no you died! Check details with:");
-            player.sendMessage("  /checkdeath " + player.getName() + " " + epoch);
+            JSONMessage.create("§6You died! We know what you lost... ")
+                    .then("§9CLICK HERE")
+                    .tooltip("/checkdeath " + player.getName() + " " + epoch)
+                    .runCommand("/checkdeath " + player.getName() + " " + epoch)
+                    .then("§6 for details")
+                    .send(player);
         }
-
-
-
     }
-
-
-
 }

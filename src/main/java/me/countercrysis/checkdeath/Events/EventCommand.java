@@ -1,6 +1,7 @@
 package me.countercrysis.checkdeath.Events;
 
 import me.countercrysis.checkdeath.Services.Base64Services;
+import me.countercrysis.checkdeath.Services.JSONMessage;
 import me.countercrysis.checkdeath.Services.YAMLServices;
 import org.bukkit.*;
 import org.bukkit.command.Command;
@@ -81,7 +82,6 @@ public class EventCommand implements CommandExecutor{
         if (!(sender instanceof Player)) {
             return false;
         }
-
         Player player = (Player) sender;
 
         int argCount = args.length;
