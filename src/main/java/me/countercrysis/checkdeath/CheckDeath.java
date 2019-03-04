@@ -17,7 +17,7 @@ public class CheckDeath extends JavaPlugin {
     private void registerEvents() {
         getServer().getPluginManager().registerEvents(new EventDeath(this, ys), this);
         getServer().getPluginManager().registerEvents(new EventPlayerJoin(this, ys), this);
-        getServer().getPluginManager().registerEvents(new EventInventoryClick(), this);
+        getServer().getPluginManager().registerEvents(new EventInventoryClick(ys), this);
         getCommand("checkdeath").setExecutor(new EventCommand(this, ys));
         getCommand("checkdeath").setTabCompleter(new EventTabComplete(ys));
     }

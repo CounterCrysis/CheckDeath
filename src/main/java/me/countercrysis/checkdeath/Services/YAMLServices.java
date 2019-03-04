@@ -41,8 +41,12 @@ public class YAMLServices {
 
     public List<String> getDeathIds(String username) {
         username = username.toLowerCase();
-        List<String> ids = new ArrayList();
         UUID uuid = getUUID(username);
+        return getDeathIds(uuid);
+    }
+
+    public List<String> getDeathIds(UUID uuid) {
+        List<String> ids = new ArrayList();
         if (uuid == null) return ids;
         Object temp = get(uuid.toString(),"deaths");
         if (temp == null) return ids;

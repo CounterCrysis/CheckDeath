@@ -7,6 +7,7 @@ import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -14,10 +15,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.plugin.Plugin;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 public class EventCommand implements CommandExecutor{
 
@@ -48,6 +46,52 @@ public class EventCommand implements CommandExecutor{
 
 
      */
+
+    private Inventory getPlayerSelectInv (Player player) {
+
+        List<UUID> players = new ArrayList();
+        UUID playerUUID = player.getUniqueId();
+        List<ItemStack> playerHeads = new ArrayList();
+
+        // Determine which players should be show in the menu
+        players.add(playerUUID);
+        if (hasPerm(player, "others") || hasPerm(player, "others.admin")){
+            ys.getCachedPlayers().forEach((key,value) -> {if (!playerUUID.equals(value)) players.add(value); });
+        }
+
+        // Determine menu size
+        int invSize = (9*(players.size() / 9)) + ((players.size() % 9 == 0) ? 0 : 9);
+        player.sendMessage(String.valueOf(invSize));
+        if (invSize>54) invSize = 54;
+
+        Inventory inv = Bukkit.createInventory(null, invSize, "CheckDeath - Select Player");
+
+        ys.getCachedPlayers().forEach((key,uuid) -> playerHeads.add(getHead(key, uuid)) );
+
+        playerHeads.forEach(skull -> inv.addItem(skull));
+
+        return inv;
+    }
+
+    private Inventory getDeathSelectInv (UUID uuid) {
+        List<String> deathIds = ys.getDeathIds(uuid);
+        String username = ys.getUsername(uuid);
+
+        int invSize = (9*(deathIds.size() / 9)) + ((deathIds.size() % 9 == 0) ? 0 : 9);
+        if (invSize>54) invSize = 54;
+        if (invSize<9) invSize = 9;
+        Inventory inv = Bukkit.createInventory(null, invSize, "CheckDeath - Select Death");
+
+        deathIds.forEach((id) -> {
+            ItemStack deathHead = getHead(username, uuid);
+            ItemMeta itemMeta = deathHead.getItemMeta();
+            itemMeta.setDisplayName(username + " " + id);
+            deathHead.setItemMeta(itemMeta);
+            inv.addItem(deathHead);
+        } );
+
+        return inv;
+    }
 
     private Inventory getDeathInv (String username, UUID uuid, String death, boolean adminPerm) {
         String data     = (String) ys.get(uuid.toString(), "deaths."+death+".data");
@@ -114,14 +158,16 @@ public class EventCommand implements CommandExecutor{
                         player.sendMessage(ChatColor.LIGHT_PURPLE + "Either the Username or Death ID you provided was incorrect!");
                     }
                 } else {
-                    player.sendMessage(ChatColor.LIGHT_PURPLE + "You did not include a Death ID");
-                    player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + username + " <death_id>");
+                    player.openInventory(getDeathSelectInv(uuid));
+                    //player.sendMessage(ChatColor.LIGHT_PURPLE + "You did not include a Death ID");
+                    //player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + username + " <death_id>");
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "You do not have permission to do that!");
             }
         } else {
-            player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + player.getName() + " <death_id>");
+            player.openInventory(getPlayerSelectInv(player));
+            //player.sendMessage(ChatColor.WHITE + "Usage -> /checkdeath " + player.getName() + " <death_id>");
         }
         return true;
     }
