@@ -38,10 +38,15 @@ public class EventInventoryClick implements Listener {
                 String name = meta.getOwningPlayer().getName();
                 player.getServer().dispatchCommand(player, "checkdeath " + name);
             } else if (invName.startsWith("CheckDeath - Select Death")) {
-                // Click in death selection
-                String[] deathArgs = item.getItemMeta().getDisplayName().split(" ");
-                player.getServer().dispatchCommand(player, "checkdeath " + deathArgs[0] + " " + deathArgs[1]);
                 event.setCancelled(true);
+                //11-15, 20-24, 29-33
+
+                if (slot>=11 && slot <=33 && slot%9>1 && slot%9<7){ // Within the 5x3 grid
+                    String deathId = item.getItemMeta().getLore().get(0);
+                    String deathName = inventory.getContents()[4].getItemMeta().getDisplayName();
+                    player.getServer().dispatchCommand(player, "checkdeath " + deathName + " " + deathId);
+                }
+
             }
 
         }

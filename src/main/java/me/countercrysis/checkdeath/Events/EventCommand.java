@@ -1,13 +1,11 @@
 package me.countercrysis.checkdeath.Events;
 
 import me.countercrysis.checkdeath.Services.Base64Services;
-import me.countercrysis.checkdeath.Services.JSONMessage;
 import me.countercrysis.checkdeath.Services.YAMLServices;
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.MemorySection;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -19,39 +17,41 @@ import java.util.*;
 
 public class EventCommand implements CommandExecutor{
 
-    private Plugin plugin;
     private YAMLServices ys;
     private Base64Services bs;
+
+    private final ItemStack[] INV_SELECT_DEATH;
 
     private boolean hasPerm(Player player, String perm) {
         return (player.hasPermission("checkdeath."+perm) || player.isOp());
     }
 
-    public EventCommand(Plugin plugin, YAMLServices ys) {
-        this.plugin = plugin;
+    public EventCommand(YAMLServices ys) {
         this.ys = ys;
         bs = new Base64Services();
+        final ItemStack GRAY = new ItemStack(Material.GRAY_STAINED_GLASS_PANE);
+        final ItemStack BLACK = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
+        final ItemStack LIGHT = new ItemStack(Material.LIGHT_GRAY_STAINED_GLASS_PANE);
+        ItemMeta blankMeta = GRAY.getItemMeta();
+        blankMeta.setDisplayName("`");
+        GRAY.setItemMeta(blankMeta);
+        BLACK.setItemMeta(blankMeta);
+        LIGHT.setItemMeta(blankMeta);
+        INV_SELECT_DEATH = new ItemStack[] {
+            /*  1     2       3       4       5       6       7       8       9     */
+                GRAY, GRAY,   BLACK,  BLACK,  LIGHT,  BLACK,  BLACK,  GRAY,   GRAY,
+                GRAY, BLACK,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  BLACK,  GRAY,
+                GRAY, BLACK,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  BLACK,  GRAY,
+                GRAY, BLACK,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  LIGHT,  BLACK,  GRAY,
+                GRAY, GRAY,   BLACK,  BLACK,  BLACK,  BLACK,  BLACK,  GRAY,   GRAY
+        };
     }
-
-    /*
-        checkdeath.???
-
-        user
-            self        /checkdeath player_name 012345  (check details of own death)
-                admin        /checkdeath admin player_name 012345 (check details of own death + retrieve items)
-            others      /checkdeath player_name 012345  (check details of other players death)
-                admin      /checkdeath admin player_name 012345 (check details of other players death + retrieve items)
-
-
-
-
-     */
 
     private Inventory getPlayerSelectInv (Player player) {
 
-        List<UUID> players = new ArrayList();
+        List<UUID> players = new ArrayList<>();
         UUID playerUUID = player.getUniqueId();
-        List<ItemStack> playerHeads = new ArrayList();
+        List<ItemStack> playerHeads = new ArrayList<>();
 
         // Determine which players should be show in the menu
         players.add(playerUUID);
@@ -61,12 +61,11 @@ public class EventCommand implements CommandExecutor{
 
         // Determine menu size
         int invSize = (9*(players.size() / 9)) + ((players.size() % 9 == 0) ? 0 : 9);
-        player.sendMessage(String.valueOf(invSize));
         if (invSize>54) invSize = 54;
 
         Inventory inv = Bukkit.createInventory(null, invSize, "CheckDeath - Select Player");
 
-        ys.getCachedPlayers().forEach((key,uuid) -> playerHeads.add(getHead(key, uuid)) );
+        ys.getCachedPlayers().forEach((key,uuid) -> playerHeads.add(getHead(uuid)) );
 
         playerHeads.forEach(skull -> inv.addItem(skull));
 
@@ -77,11 +76,44 @@ public class EventCommand implements CommandExecutor{
         List<String> deathIds = ys.getDeathIds(uuid);
         String username = ys.getUsername(uuid);
 
-        int invSize = (9*(deathIds.size() / 9)) + ((deathIds.size() % 9 == 0) ? 0 : 9);
-        if (invSize>54) invSize = 54;
-        if (invSize<9) invSize = 9;
+        //int invSize = (9*(deathIds.size() / 9)) + ((deathIds.size() % 9 == 0) ? 0 : 9);
+        int invSize = 45;
+        //if (invSize>54) invSize = 54;
+        //if (invSize<9) invSize = 9;
         Inventory inv = Bukkit.createInventory(null, invSize, "CheckDeath - Select Death");
 
+
+        inv.setContents(INV_SELECT_DEATH);
+
+        //HEAD
+        ItemStack deathHead = getHead(uuid);
+        ItemMeta headItemMeta = deathHead.getItemMeta();
+        headItemMeta.setDisplayName(username);
+        deathHead.setItemMeta(headItemMeta);
+        inv.setItem(4,deathHead);
+
+        //5x3 Death Slots
+        //11-15, 20-24, 29-33
+        ItemStack red = new ItemStack(Material.RED_TULIP);
+        ItemStack org = new ItemStack(Material.ORANGE_TULIP);
+
+        int start = 0;
+        int end = deathIds.size()>15 ? 15 : deathIds.size();
+        long now = System.currentTimeMillis();
+        int numDeaths = deathIds.size();
+
+        for (int i=start; i<end; i++) {
+            int slot = 11 + i%5 + (9*(i/5));
+            ItemStack item = slot%2==1 ? red : org;
+            ItemMeta meta = item.getItemMeta();
+            double timeDif = (now/1000.0) - Double.parseDouble(deathIds.get(numDeaths-i-1));
+            meta.setDisplayName("§9Time: §r" + String.format("%.02f", (timeDif / 60.0 / 60.0)) + "h ago");
+            meta.setLore(Arrays.asList(deathIds.get(numDeaths-i-1)));
+            item.setItemMeta(meta);
+            inv.setItem(slot, item);
+        }
+
+        /*
         deathIds.forEach((id) -> {
             ItemStack deathHead = getHead(username, uuid);
             ItemMeta itemMeta = deathHead.getItemMeta();
@@ -89,6 +121,7 @@ public class EventCommand implements CommandExecutor{
             deathHead.setItemMeta(itemMeta);
             inv.addItem(deathHead);
         } );
+        */
 
         return inv;
     }
@@ -115,18 +148,21 @@ public class EventCommand implements CommandExecutor{
             return null;
         }
 
-        ItemStack head = getHead(username, uuid);
+        ItemStack head = getHead(uuid);
         addDeathDetails(head, deathDetails);
 
         inventory.setItem(inventory.getSize()-1, head);
         return inventory;
     }
 
+
+
     public boolean onCommand(CommandSender sender, Command command, String s, String[] args) {
         if (!(sender instanceof Player)) {
             return false;
         }
         Player player = (Player) sender;
+
 
         int argCount = args.length;
 
@@ -181,8 +217,8 @@ public class EventCommand implements CommandExecutor{
     private static void addDeathDetails(ItemStack item, Map<String, Object> details) {
         ItemMeta itemMeta = item.getItemMeta();
         itemMeta.setDisplayName("§c§lDeath " + details.get("n"));
-        Long now = System.currentTimeMillis(); //in milli
-        Double timeDif = (now.doubleValue()/1000.0) - Double.parseDouble((String)details.get("t"));
+        long now = System.currentTimeMillis(); //in milli
+        double timeDif = (now/1000.0) - Double.parseDouble((String)details.get("t"));
         itemMeta.setLore(Arrays.asList(
                 tcc("&1World: &r" + details.get("w")),
                 tcc("&9X: &r" + details.get("x") + " &9Y: &r" + details.get("y") + " &9Z: &r" + details.get("z")),
@@ -193,7 +229,7 @@ public class EventCommand implements CommandExecutor{
         item.setItemMeta(itemMeta);
     }
 
-    private static ItemStack getHead(String username, UUID uuid) {
+    private static ItemStack getHead(UUID uuid) {
         ItemStack itemSkull = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta metaSkull = (SkullMeta) itemSkull.getItemMeta();
         metaSkull.setOwningPlayer(Bukkit.getOfflinePlayer(uuid));
