@@ -29,7 +29,7 @@ public class EventInventoryClick implements Listener {
             return;
         }
 
-        String invName = inventory.getName();
+        String invName = event.getView().getTitle();
 
         if (invName.startsWith("CheckDeath")) {
 
