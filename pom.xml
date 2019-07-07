@@ -6,7 +6,7 @@
 
     <groupId>me.countercrysis</groupId>
     <artifactId>checkdeath</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
@@ -24,7 +24,7 @@
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
-            <version>1.13.2-R0.1-SNAPSHOT</version>
+            <version>1.14.3-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
