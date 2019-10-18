@@ -1,3 +1,4 @@
+# Test to see if it stores dependencies of old builds to m2 or not
 name: Java CI
 
 on: [push]
